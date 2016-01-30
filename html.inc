@@ -184,7 +184,7 @@
                     keyi = e.which;
                     keya = String.fromCharCode(keyi);
                     if (keya >= '0' && keya <= '9') {
-                        appendLine(parseInt(keya));
+                        appendOperand(parseInt(keya));
                     }
                     else if (keyi == 37 ||   // %
                         keyi == 42 ||   // *
@@ -192,7 +192,7 @@
                         keyi == 45 ||   // -
                         keyi == 47)     // /
                     {
-                        appendLine(keya);
+                        appendOperand(keya);
                     }
                     else if (keyi == 13) // enter
                     {
