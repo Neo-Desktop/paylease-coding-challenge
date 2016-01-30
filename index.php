@@ -40,7 +40,15 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET')
     readfile('html.inc');
     exit; // exit early
 }
+// quick git updating
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' && isset($_REQUEST['pull']) && is_dir('.git'))
+{
+    shell_exec('git reset --hard HEAD && git pull');
+    echo "success";
+    exit; //exit early
+}
 
+//acceptable operations
 $operations = [
     '+',
     '-',
