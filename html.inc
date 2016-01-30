@@ -137,7 +137,7 @@
                     <h4>Calculator Log</h4>
                     <div class="row">
                         <pre>10 5 * = 50</pre>
-                        <p>Duration: 0.0001</p>
+                        <p class="text-right">Duration: 0.0001</p>
                     </div>
                 </div>
             </div>
@@ -162,7 +162,7 @@
                 data = e.target.dataset.rpn;
                 if (data != 'send') {
                     // not the enter key
-                    appendLine(data);
+                    appendOperand(data);
                     if (debug) {
                         console.log('Button Pushed ' + data + '\nLine is:' + line.val()); //debug
                     }
@@ -203,13 +203,37 @@
         });
 
         //---------------- functions here ----------------
-        function appendLine(data) {
+        function appendOperand(data) {
             line = $('#line');
             line.val(line.val() + ' ' + data);
         }
 
+        function appendResponse(data) {
+            // new row
+            row = $('<div />', {
+                class: 'row'
+            });
+
+            // add answer
+            $('<pre/>', {
+               text: data.Input + " = " + data.Answer
+            }).appendTo(row);
+
+            // add duration
+            $('<p/>', {
+                text: data.Duration
+            }).appendTo(row);
+
+            // append to dom
+            $(row).appendTo('#loglines');
+        }
+
         function validateLine() {
             return true;
+        }
+
+        function parseResponse(data) {
+            console.log(data);
         }
 
         function sendLine() {
@@ -217,7 +241,7 @@
             line.val(line.val().trim());
 
             if (debug) {
-                console.log('Sending line: '+ line.val())
+                console.log('Sending line: '+ line.val());
             }
 
             if (validateLine()) {
@@ -230,7 +254,7 @@
                     dataType: 'json',
                     async: true,
                     success: function(msg) {
-                        alert(msg);
+                        parseResponse(msg);
                     }
                 });
                 line.val('');

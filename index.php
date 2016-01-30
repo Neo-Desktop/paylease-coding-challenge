@@ -22,13 +22,13 @@ foreach ($files as $key => $value)
 
 if (isset($_REQUEST['source']))
 {
-    echo 'Filename: '.  __FILE__ .'<br /><br />';
+    echo 'Filename: '. basename(__FILE__) .'<br /><br />';
     highlight_file(__FILE__);
     echo '<hr>';
 
     foreach ($files as $key => $value)
     {
-        echo 'Filename: '. $value .'<br /><br />';
+        echo 'Filename: '. basename($value) .'<br /><br />';
         highlight_file($value);
         echo '<hr>';
     }
@@ -87,6 +87,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
                 $out = output(false);
                 $out['Payload']['Error']['Message'] = "Error parsing operand ".$i;
                 $out['Payload']['Error']['Parameter'] = $o1;
+                $o1 = $o2 = $op = null;
                 break;
             }
         }
@@ -99,6 +100,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
                 $out = output(false);
                 $out['Payload']['Error']['Message'] = "Error parsing operand ".$i;
                 $out['Payload']['Error']['Parameter'] = $o2;
+                $o1 = $o2 = $op = null;
                 break;
             }
         }
@@ -106,11 +108,12 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
         {
             $op = array_shift($line);
             $i++;
-            if (!in_array($op, $operations))
+            if (!in_array($op, $operations)) // sanitize operations
             {
                 $out = output(false);
                 $out['Payload']['Error']['Message'] = "Error parsing operand ".$i;
                 $out['Payload']['Error']['Parameter'] = $op;
+                $o1 = $o2 = $op = null;
                 break;
             }
         }
@@ -123,10 +126,10 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
                 'o2' => $o2,
                 'op' => $op,
                 'eval' => $o1.$op.$o2,
-            ];
+            ]; // debug individual steps
 
-            $o1 = eval('return '. $o1.$op.$o2 .';');
-            $o2 = $op = null;
+            $o1 = eval('return '. $o1.$op.$o2 .';'); //calc here
+            $o2 = $op = null; // reset for next operation
         }
         else
         {
