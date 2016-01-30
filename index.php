@@ -66,10 +66,9 @@ $out = output(true);
 if (!empty($in['payload']) && !empty($in['payload']['line']))
 {
     $line = $in['payload']['line'];
+
     $line = explode(' ', $line);
     $line = array_filter($line);
-
-    $out['Meta']['Input'] = print_r($line, true);
 
     $total = count($line) -1;
     $o1 = $o2 = $op = null;
@@ -136,13 +135,24 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
             break;
         }
     }
-    $out['Payload']['Answer'] = $o1;
-    $out['Payload']['Steps'] = $steps;
+    if (!empty($o1))
+    {
+        // success
+        $out['Payload']['Answer'] = $o1;
+        $out['Payload']['Steps'] = $steps;
+        $out['Payload']['Input'] = $in['payload']['line'];
+    }
+    else
+    {
+        // failure
+        $out = output(false);
+        $out['Payload']['Error']['Message'] = 'Unable to calculate result';
+    }
 }
 else
 {
     $out = output(false);
-    $out['Payload']['Error'] = "Empty input line received";
+    $out['Payload']['Error']['Message'] = "Empty input line received";
 }
 
 response($out);
@@ -159,10 +169,11 @@ exit; // logical end of program
  */
 function response($in)
 {
+    // always calculate time
     $in['Meta']['TimeOut'] = microtime(true);
-    $in['Meta']['Duration'] = round(5, $in['Meta']['TimeOut'] - $_SERVER["REQUEST_TIME_FLOAT"]);
+    $in['Meta']['Duration'] = round($in['Meta']['TimeOut'] - $_SERVER["REQUEST_TIME_FLOAT"], 5);
 
-    header('Content-Type: application/json;charset=UTF-8');
+    header('Content-Type: application/json;charset=UTF-8'); // make sure we are json
     echo json_encode($in);
 }
 
@@ -182,14 +193,14 @@ function input()
     }
     catch (Exception $e)
     {
-        $out['Payload']['Error'] = 'Caught exception decoding JSON';
+        $out['Payload']['Error']['Message'] = 'Caught exception decoding JSON';
         response($out);
         exit;
     }
 
     if (empty($in))
     {
-        $out['Payload']['Error'] = 'Input was empty';
+        $out['Payload']['Error']['Message'] = 'Input was empty';
         response($out);
         exit;
     }

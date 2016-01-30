@@ -159,6 +159,7 @@
             debug = true;
 
             $('[data-rpn]').click(function(e) { // select all rpn buttons
+                line = $('#line');
                 data = e.target.dataset.rpn;
                 if (data != 'send') {
                     // not the enter key
@@ -175,7 +176,7 @@
                 }
             });
 
-            $('body').keypress(function(e) {
+            $('html').keypress(function(e) {
                 if (debug) {
                     console.log(e);
                 }
@@ -186,11 +187,14 @@
                     if (keya >= '0' && keya <= '9') {
                         appendOperand(parseInt(keya));
                     }
-                    else if (keyi == 37 ||   // %
+                    else if (
+                        keyi == 32 ||   // <space>
+                        keyi == 37 ||   // %
                         keyi == 42 ||   // *
                         keyi == 43 ||   // +
                         keyi == 45 ||   // -
-                        keyi == 47)     // /
+                        keyi == 47      // /
+                    )
                     {
                         appendOperand(keya);
                     }
@@ -200,12 +204,23 @@
                     }
                 }
             });
+
+            $('html').keydown(function (e) {
+                //trap the backspace
+                keyi = e.which;
+                if ((keyi == $.ui.keycode.BACKSPACE || keyi == $.ui.keycode.DELETE) &&
+                    !($("input").is(":focus"))) {
+                    line = $('#line');
+                    line.val(line.val().substring(0, line.val().length - 1));
+                    e.preventDefault();
+                }
+            });
         });
 
         //---------------- functions here ----------------
         function appendOperand(data) {
             line = $('#line');
-            line.val(line.val() + ' ' + data);
+            line.val(line.val() + data);
         }
 
         function appendResponse(data) {
@@ -233,7 +248,16 @@
         }
 
         function parseResponse(data) {
-            console.log(data);
+            if (data.Meta.Success == true) {
+                out = {
+                    Input: data.Payload.Input,
+                    Duration: data.Meta.Duration,
+                    Answer: data.Payload.Answer
+                };
+                appendResponse(out);
+            } else {
+                alert("Something went wrong\n"+data.Payload.Error.Message);
+            }
         }
 
         function sendLine() {
