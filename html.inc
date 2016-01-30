@@ -244,7 +244,7 @@
 
             // add duration
             $('<p/>', {
-                class: 'text-right'
+                class: 'text-right',
                 text: 'Duration: ' + data.Duration
             }).appendTo(row);
 
