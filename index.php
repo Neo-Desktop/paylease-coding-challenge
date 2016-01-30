@@ -54,15 +54,8 @@ $operations = [
     '-',
     '*',
     '/',
+    '%',
 ];
-
-$sandbox = new Runkit_Sandbox([
-    'safe_mode'         => true,
-    'open_basedir'      => '/tmp',
-    'allow_url_fopen'   => 'false',
-    'disable_functions' => 'exec,shell_exec,passthru,system',
-    'disable_classes'   => 'myAppClass'
-]);
 
 //--------------------------------------------- lets begin -----------------
 
@@ -119,13 +112,14 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
         }
         if (!empty($o1) && !empty($o2) && !empty($op))
         {
-            $o1 = $sandbox->eval($o1.$op.$o2);
+            $o1 = eval($o1.$op.$o2);
         }
         else
         {
             break;
         }
     }
+    $out['Payload']['Answer'] = $o1;
 }
 else
 {

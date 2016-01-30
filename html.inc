@@ -93,6 +93,9 @@
                         <div class="col-xs-1">
                             <a class="num btn btn-default" data-rpn="9">9</a>
                         </div>
+                        <div class="col-xs-1">
+                            <a class="num btn btn-info" data-rpn="%">%</a>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-1">
@@ -130,9 +133,12 @@
                 </div>
             </div>
             <div class="col-xs-8">
-                <div class="row well">
+                <div class="row well" id="loglines">
                     <h4>Calculator Log</h4>
-                    <pre>10 5 * = 50</pre>
+                    <div class="row">
+                        <pre>10 5 * = 50</pre>
+                        <p>Duration: 0.0001</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -150,28 +156,48 @@
 
         //----------------- body is ready --------
         $(document).ready(function() {
+            debug = false;
+
             $('[data-rpn]').click(function(e) { // select all rpn buttons
                 data = e.target.dataset.rpn;
                 if (data != 'send') {
                     // not the enter key
                     appendLine(data);
-                    console.log('Button Pushed ' + data + '\nLine is:' + line.val()); //debug
+                    if (debug) {
+                        console.log('Button Pushed ' + data + '\nLine is:' + line.val()); //debug
+                    }
                 } else {
                     // submit line
+                    if (debug) {
+                        console.log("Submitting line to backend");
+                    }
                     sendLine();
                 }
             });
 
             $('body').keypress(function(e) {
-                console.log(e);
-                keyi = e.which;
-                keya = String.fromCharCode(e.which);
-                if (keya >= '0' && keya <= '9') {
-                    appendLine(parseInt(keya));
-                } else if (keyi == 42 || keyi == 43 || keyi == 45 || keyi == 47) {
-                    appendLine(keya);
-                } else if (keyi == 13) {
-                    sendLine();
+                if (debug) {
+                    console.log(e);
+                }
+
+                if (!($("input").is(":focus"))) {
+                    keyi = e.which;
+                    keya = String.fromCharCode(keyi);
+                    if (keya >= '0' && keya <= '9') {
+                        appendLine(parseInt(keya));
+                    }
+                    else if (keyi == 37 ||   // %
+                        keyi == 42 ||   // *
+                        keyi == 43 ||   // +
+                        keyi == 45 ||   // -
+                        keyi == 47)     // /
+                    {
+                        appendLine(keya);
+                    }
+                    else if (keyi == 13) // enter
+                    {
+                        sendLine();
+                    }
                 }
             });
         });
