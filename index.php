@@ -65,6 +65,7 @@ $out = output(true);
 
 if (!empty($in['payload']) && !empty($in['payload']['line']))
 {
+    die(print_r($in));
     $line = $in['payload']['line'];
     $line = explode($line, ' ');
     $line = array_filter($line);
@@ -157,7 +158,7 @@ exit; // logical end of program
 function response($in)
 {
     $in['Meta']['TimeOut'] = microtime(true);
-    $in['Meta']['Duration'] = $in['Meta']['TimeOut'] - $_SERVER["REQUEST_TIME_FLOAT"];
+    $in['Meta']['Duration'] = round(5, $in['Meta']['TimeOut'] - $_SERVER["REQUEST_TIME_FLOAT"]);
 
     header('Content-Type: application/json;charset=UTF-8');
     echo json_encode($in);
