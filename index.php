@@ -78,6 +78,8 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
 
     for ($i = 0; $i > $total;) // no default increment
     {
+        die(print_r([$o1, $o2, $op]));
+
         if (empty($o1))
         {
             $o1 = array_shift($line);
@@ -102,9 +104,6 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
                 break;
             }
         }
-
-        die(print_r([$o1, $o2, $op]));
-
         if (empty($op))
         {
             $op = array_shift($line);
