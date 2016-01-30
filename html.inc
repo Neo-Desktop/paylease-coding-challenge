@@ -156,7 +156,7 @@
 
         //----------------- body is ready --------
         $(document).ready(function() {
-            debug = false;
+            debug = true;
 
             $('[data-rpn]').click(function(e) { // select all rpn buttons
                 data = e.target.dataset.rpn;
@@ -213,6 +213,12 @@
         }
 
         function sendLine() {
+            line = $('#line');
+
+            if (debug) {
+                console.log('Sending line: '+ line.val())
+            }
+
             if (validateLine()) {
                 out = { meta: {}, payload: {line: line.val()} };
                 $.ajax({

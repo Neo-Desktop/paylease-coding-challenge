@@ -75,6 +75,8 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
     $total = count($line) -1;
     $o1 = $o2 = $op = null;
 
+    $steps = [];
+
     for ($i = 0; $i > $total;) // no default increment
     {
         if (empty($o1))
@@ -110,9 +112,18 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
                 break;
             }
         }
+
+        //actual calc
         if (!empty($o1) && !empty($o2) && !empty($op))
         {
+            $steps[] = [
+                'o1' => $o1,
+                'o2' => $o2,
+                'op' => $op,
+            ];
+
             $o1 = eval($o1.$op.$o2);
+            $o2 = $op = null;
         }
         else
         {
