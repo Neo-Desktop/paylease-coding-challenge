@@ -115,6 +115,8 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
             }
         }
 
+        die(print_r([$o1, $o2, $op]));
+
         //actual calc
         if (!empty($o1) && !empty($o2) && !empty($op))
         {
