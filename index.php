@@ -67,10 +67,6 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
 {
     $line = $in['payload']['line'];
     $line = explode($line, ' ');
-    foreach ($line as $key => $value)
-    {
-        $line[$key] = trim($line[$key]);
-    }
     $line = array_filter($line);
 
     $out['Meta']['Input'] = print_r($line, true);
