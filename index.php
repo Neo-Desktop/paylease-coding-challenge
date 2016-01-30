@@ -73,6 +73,8 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
     }
     $line = array_filter($line);
 
+    $out['Meta']['Input'] = print_r($line, true);
+
     $total = count($line) -1;
     $o1 = $o2 = $op = null;
 
