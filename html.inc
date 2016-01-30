@@ -189,9 +189,10 @@
                     //console.log(e);
                 }
 
+                keyi = e.which;
+                keya = String.fromCharCode(keyi);
+
                 if (!($("input").is(":focus"))) {
-                    keyi = e.which;
-                    keya = String.fromCharCode(keyi);
                     if (keya >= '0' && keya <= '9') {
                         appendOperand(parseInt(keya));
                     }
@@ -206,10 +207,10 @@
                     {
                         appendOperand(keya);
                     }
-                    else if (keyi == 13) // enter
-                    {
-                        sendLine();
-                    }
+                }
+                if (keyi == 13) // enter
+                {
+                    sendLine();
                 }
             });
 
