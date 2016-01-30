@@ -87,7 +87,8 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
             if (!is_numeric($o1))
             {
                 $out = output(false);
-                $out['Payload']['Error'] = "Error parsing operand ".$i;
+                $out['Payload']['Error']['Message'] = "Error parsing operand ".$i;
+                $out['Payload']['Error']['Parameter'] = $o1;
                 break;
             }
         }
@@ -98,7 +99,8 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
             if (!is_numeric($o2))
             {
                 $out = output(false);
-                $out['Payload']['Error'] = "Error parsing operand ".$i;
+                $out['Payload']['Error']['Message'] = "Error parsing operand ".$i;
+                $out['Payload']['Error']['Parameter'] = $o2;
                 break;
             }
         }
@@ -109,7 +111,8 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
             if (!in_array($op, $operations))
             {
                 $out = output(false);
-                $out['Payload']['Error'] = "Error parsing operand ".$i;
+                $out['Payload']['Error']['Message'] = "Error parsing operand ".$i;
+                $out['Payload']['Error']['Parameter'] = $op;
                 break;
             }
         }
