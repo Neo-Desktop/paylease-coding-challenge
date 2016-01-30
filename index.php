@@ -66,8 +66,7 @@ $out = output(true);
 if (!empty($in['payload']) && !empty($in['payload']['line']))
 {
     $line = $in['payload']['line'];
-    $line = explode($line, ' ');
-    die(print_r($line));
+    $line = explode(' ', $line);
     $line = array_filter($line);
 
     $out['Meta']['Input'] = print_r($line, true);
