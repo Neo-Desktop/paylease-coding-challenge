@@ -118,6 +118,9 @@
                         <div class="col-xs-1">
                             <a class="num btn btn-default" data-rpn="3">3</a>
                         </div>
+                        <div class="col-xs-1">
+                            <a class="num btn btn-danger" data-rpn="clear">C</a>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-1">
@@ -133,12 +136,9 @@
                 </div>
             </div>
             <div class="col-xs-8">
-                <div class="row well" id="loglines">
+                <div class="row well">
                     <h4>Calculator Log</h4>
-                    <div class="row">
-                        <pre>10 5 * = 50</pre>
-                        <p class="text-right">Duration: 0.0001</p>
-                    </div>
+                    <div id="loglines"></div>
                 </div>
             </div>
         </div>
@@ -161,24 +161,32 @@
             $('[data-rpn]').click(function(e) { // select all rpn buttons
                 line = $('#line');
                 data = e.target.dataset.rpn;
-                if (data != 'send') {
+                if (data != 'send' && data != 'clear') {
                     // not the enter key
                     appendOperand(data);
                     if (debug) {
                         console.log('Button Pushed ' + data + '\nLine is:' + line.val()); //debug
                     }
-                } else {
+                }
+                else if (data == 'send') {
                     // submit line
                     if (debug) {
                         console.log("Submitting line to backend");
                     }
                     sendLine();
                 }
+                else if (data == 'clear') {
+                    if (debug) {
+                        console.log("Clearing line and log");
+                    }
+                    line.val('');
+                    $('#loglines').empty();
+                }
             });
 
             $('html').keypress(function(e) {
                 if (debug) {
-                    console.log(e);
+                    //console.log(e);
                 }
 
                 if (!($("input").is(":focus"))) {
@@ -236,11 +244,13 @@
 
             // add duration
             $('<p/>', {
-                text: data.Duration
+                class: 'text-right'
+                text: 'Duration: ' + data.Duration
             }).appendTo(row);
 
             // append to dom
             $(row).appendTo('#loglines');
+            $('#line').val(data.Answer);
         }
 
         function validateLine() {
