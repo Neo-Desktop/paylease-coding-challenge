@@ -107,6 +107,9 @@
                         <div class="col-xs-1">
                             <a class="num btn btn-default" data-rpn="6">6</a>
                         </div>
+                        <div class="col-xs-1">
+                            <a class="num btn btn-info" data-rpn="^">^</a>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-1">
@@ -202,7 +205,8 @@
                         keyi == 42 ||   // *
                         keyi == 43 ||   // +
                         keyi == 45 ||   // -
-                        keyi == 47      // /
+                        keyi == 47 ||   // /
+                        keyi == 94      // ^
                     )
                     {
                         appendOperand(keya);
