@@ -121,6 +121,10 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
         //actual calc
         if (!empty($o1) && !empty($o2) && !empty($op))
         {
+            if ($op == '^') { // shim for non-standard PHP exponent syntax
+                $op = '**';
+            }
+
             $steps[] = [
                 'o1' => $o1,
                 'o2' => $o2,
