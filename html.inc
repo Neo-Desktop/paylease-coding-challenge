@@ -214,6 +214,7 @@
 
         function sendLine() {
             line = $('#line');
+            line.val(line.val().trim());
 
             if (debug) {
                 console.log('Sending line: '+ line.val())

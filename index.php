@@ -71,6 +71,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
     {
         $line[$key] = trim($line[$key]);
     }
+    $line = array_filter($line);
 
     $total = count($line) -1;
     $o1 = $o2 = $op = null;
@@ -120,6 +121,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
                 'o1' => $o1,
                 'o2' => $o2,
                 'op' => $op,
+                'eval' => $o1.$op.$o2,
             ];
 
             $o1 = eval($o1.$op.$o2);
@@ -131,6 +133,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
         }
     }
     $out['Payload']['Answer'] = $o1;
+    $out['Payload']['Steps'] = $steps;
 }
 else
 {
