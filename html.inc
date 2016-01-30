@@ -208,7 +208,7 @@
             $('html').keydown(function (e) {
                 //trap the backspace
                 keyi = e.which;
-                if ((keyi == $.ui.keycode.BACKSPACE || keyi == $.ui.keycode.DELETE) &&
+                if ((keyi == $.ui.keyCode.BACKSPACE || keyi == $.ui.keyCode.DELETE) &&
                     !($("input").is(":focus"))) {
                     line = $('#line');
                     line.val(line.val().substring(0, line.val().length - 1));
