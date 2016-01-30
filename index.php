@@ -125,7 +125,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
                 'eval' => $o1.$op.$o2,
             ];
 
-            $o1 = eval($o1.$op.$o2);
+            $o1 = eval('return '.$o1.$op.$o2);
             $o2 = $op = null;
         }
         else
