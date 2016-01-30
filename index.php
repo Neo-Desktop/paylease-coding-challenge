@@ -76,10 +76,8 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
 
     $steps = [];
 
-    for ($i = 0; $i > $total;) // no default increment
+    for ($i = 0; $i < $total;) // no default increment
     {
-        die(print_r([$o1, $o2, $op]));
-
         if (empty($o1))
         {
             $o1 = array_shift($line);
