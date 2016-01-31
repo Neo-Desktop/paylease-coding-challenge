@@ -150,14 +150,19 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
     else
     {
         // failure
-        $out = output(false);
-        $out['Payload']['Error']['Message'] = 'Unable to calculate result';
+        if (empty($out))
+        {
+            $out = output(false);
+            $out['Payload']['Error']['Message'] = 'Unable to calculate result';
+        }
+        $out['Payload']['Input'] = $in['payload']['line'];
     }
 }
 else
 {
     $out = output(false);
     $out['Payload']['Error']['Message'] = "Empty input line received";
+    $out['Payload']['Input'] = $in['payload']['line'];
 }
 
 response($out);

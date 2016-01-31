@@ -65,8 +65,9 @@
             <div class="col-xs-4">
                 <div class="well">
                     <div class="row">
-                        <div class="form-group">
+                        <div class="form-group" id="linegroup">
                             <input title="Calculator line" class="form-control" id="line" type="text" value="">
+                            <p class='text-right' id="lineerror"></p>
                         </div>
                     </div>
                     <div class="row">
@@ -263,7 +264,15 @@
         }
 
         function parseResponse(data) {
+            linegroup = $('#linegroup');
+            lineerror = $('#lineerror');
+            line = $('#line');
+
             if (data.Meta.Success == true) {
+                if (linegroup.hasClass('has-error')) {
+                    linegroup.removeClass('has-error');
+                    lineerror.html('');
+                }
                 out = {
                     Input: data.Payload.Input,
                     Duration: data.Meta.Duration,
@@ -271,7 +280,9 @@
                 };
                 appendResponse(out);
             } else {
-                alert("Something went wrong\n"+data.Payload.Error.Message);
+                linegroup.addClass('has-error');
+                lineerror.html(data.Payload.Error.Message);
+                line.val(data.Payload.Input);
             }
         }
 
