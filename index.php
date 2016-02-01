@@ -90,12 +90,13 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
      * Numbers in the input are unshift()ed into $stack
      * Operations calculate the first two arguments shift()ed from $stack
      */
-    for ($i = 0; $i < $total; $i++)
+    for ($i = 0; $i < $total;)
     {
         // numbers are added to the stack
         if (is_numeric($line[$i]) && !empty($line[$i]))
         {
             array_unshift($stack, $line[$i]);
+            $i++;
             continue;
         }
 
@@ -135,9 +136,11 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
                         'o1' => $o1,
                         'o2' => $o2,
                         'op' => $op,
-                    ]
+                    ],
+                    'Stack' => $stack,
                 ];
             }
+            $i++;
         }
 
         // anything else is a syntax error
@@ -147,6 +150,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
             $out['Payload']['Error'] = [
                 'Message' => "Syntax error at argument '".$line[$i]."'",
             ];
+            break;
         }
     }
 
@@ -154,7 +158,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
     if (!empty($stack[0]) && count($stack[0]) == 1)
     {
         // success
-        $out['Payload']['Answer'] = $o1;
+        $out['Payload']['Answer'] = array_shift($stack);
         $out['Payload']['Steps'] = $steps;
         $out['Payload']['Input'] = $in['payload']['line'];
     }
