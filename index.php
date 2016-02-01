@@ -163,12 +163,8 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
     }
     else
     {
-        // failure
-        if (empty($out))
-        {
-            $out = output(false);
-            $out['Payload']['Error']['Message'] = 'Unable to calculate result';
-        }
+        $out = output(false);
+        $out['Payload']['Error']['Message'] = 'Unable to calculate result';
     }
 }
 else
