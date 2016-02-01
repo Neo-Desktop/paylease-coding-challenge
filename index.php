@@ -82,7 +82,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
         exit; //exit early
     }
 
-    $total = count($line) -1;
+    $argc = count($line);
 
     /**
      * This loops over each element in the input array
@@ -90,7 +90,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
      * Numbers in the input are unshift()ed into $stack
      * Operations calculate the first two arguments shift()ed from $stack
      */
-    for ($i = 0; $i < $total;)
+    for ($i = 0; $i < $argc;)
     {
         // numbers are added to the stack
         if (is_numeric($line[$i]) && !empty($line[$i]))
