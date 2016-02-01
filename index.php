@@ -73,7 +73,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
 
     $steps = $stack = [];
 
-    if (count($line) > 3)
+    if (count($line) < 3)
     {
         $out = output(false);
         $out['Payload']['Error']['Message'] = "Input needs at least three operands";
