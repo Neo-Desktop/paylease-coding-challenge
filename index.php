@@ -103,9 +103,9 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
         // operations calculate the stack
         else if (in_array($line[$i], $operations))
         {
-            $o1 = array_shift($stack);
-            $o2 = array_shift($stack);
-            $op = $line[$i];
+            $o2 = array_shift($stack); // operation pairing
+            $o1 = array_shift($stack); // order matters here
+            $op = $line[$i]; // line cursor
 
             //actual calc
             if (!empty($o1) && !empty($o2) && !empty($op))
@@ -117,15 +117,16 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
                     $op = '*';
                 }
 
+                $result = eval('return '. $o1.$op.$o2 .';'); //calc here
+                array_unshift($stack, $result);
+
                 $steps[] = [
                     'o1' => $o1,
                     'o2' => $o2,
                     'op' => $op,
                     'eval' => $o1.$op.$o2,
+                    'result' => $result,
                 ]; // debug individual steps
-
-                $result = eval('return '. $o1.$op.$o2 .';'); //calc here
-                array_unshift($stack, $result);
             }
             else //we're missing something
             {
