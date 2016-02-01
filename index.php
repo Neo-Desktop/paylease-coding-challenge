@@ -164,7 +164,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
     else
     {
         $out = output(false);
-        $out['Payload']['Error']['Message'] = 'Unable to calculate result';
+        $out['Payload']['Error']['Message'] = 'Unable to calculate result: Too many values';
     }
 }
 else
