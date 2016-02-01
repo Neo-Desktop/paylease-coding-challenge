@@ -156,12 +156,10 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
     }
 
     //final output validation
-    if (!empty($stack[0]) && count($stack[0]) == 1)
+    if (!empty($stack[0]) && count($stack) == 1) // make sure stack is clear
     {
         // success
         $out['Payload']['Answer'] = array_shift($stack);
-        $out['Payload']['Steps'] = $steps;
-        $out['Payload']['Input'] = $in['payload']['line'];
     }
     else
     {
@@ -171,16 +169,17 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
             $out = output(false);
             $out['Payload']['Error']['Message'] = 'Unable to calculate result';
         }
-        $out['Payload']['Steps'] = $steps;
-        $out['Payload']['Input'] = $in['payload']['line'];
     }
 }
 else
 {
     $out = output(false);
     $out['Payload']['Error']['Message'] = "Empty input line received";
-    $out['Payload']['Input'] = $in['payload']['line'];
 }
+
+$out['Payload']['Input'] = $in['payload']['line'];
+$out['Payload']['Steps'] = $steps;
+$out['Payload']['Stack'] = $stack;
 
 response($out);
 
