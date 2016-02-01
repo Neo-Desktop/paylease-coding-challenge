@@ -68,13 +68,13 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
 {
     $line = $in['payload']['line'];
 
-    $line = explode(' ', $line);
+    $line = explode(' ', $line); //space separated input
     $line = array_filter($line);
+
+    $steps = [];
 
     $total = count($line) -1;
     $o1 = $o2 = $op = null;
-
-    $steps = [];
 
     for ($i = 0; $i < $total;) // no default increment
     {
@@ -82,7 +82,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
         {
             $o1 = array_shift($line);
             $i++;
-            if (!is_numeric($o1))
+            if (!ctype_digit($o1))
             {
                 $out = output(false);
                 $out['Payload']['Error']['Message'] = "Error parsing operand ".$i;
@@ -95,7 +95,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
         {
             $o2 = array_shift($line);
             $i++;
-            if (!is_numeric($o2))
+            if (!ctype_digit($o2))
             {
                 $out = output(false);
                 $out['Payload']['Error']['Message'] = "Error parsing operand ".$i;
