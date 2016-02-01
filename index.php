@@ -11,7 +11,6 @@
 $files = [
     'html' => 'html.inc',
 ];
-
 foreach ($files as $key => $value)
 {
     if (!file_exists($value))
@@ -20,6 +19,7 @@ foreach ($files as $key => $value)
     }
 }
 
+// view source
 if (isset($_REQUEST['source']))
 {
     echo 'Filename: '. basename(__FILE__) .'<br /><br />';
@@ -34,12 +34,15 @@ if (isset($_REQUEST['source']))
     }
     exit; // exit early
 }
+
+// serve html.inc on GET
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET')
 {
     header('Content-Type: text/html;charset=UTF-8');
     readfile('html.inc');
     exit; // exit early
 }
+
 // quick git updating
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST' && isset($_REQUEST['pull']) && is_dir('.git'))
 {
@@ -53,6 +56,7 @@ $operations = [
     '+',
     '-',
     '*',
+    'x',
     '/',
     '%',
     '^',
@@ -149,14 +153,14 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
         {
             $out = output(false);
             $out['Payload']['Error'] = [
-                'Message' => "Syntax error at argument '".$line[$i]."'",
+                'Message' => "Syntax error near '".$line[$i]."'",
             ];
             break;
         }
     }
 
     //final output validation
-    if (!empty($stack[0]) && count($stack) == 1) // make sure stack is clear
+    if (count($stack) == 1) // make sure stack is clear
     {
         // success
         $out['Payload']['Answer'] = array_shift($stack);
@@ -164,7 +168,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
     else
     {
         $out = output(false);
-        $out['Payload']['Error']['Message'] = 'Unable to calculate result: Too many values';
+        $out['Payload']['Error']['Message'] = 'Unable to calculate result';
     }
 }
 else
