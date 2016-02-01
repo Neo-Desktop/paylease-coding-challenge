@@ -71,76 +71,87 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
     $line = explode(' ', $line); //space separated input
     $line = array_filter($line);
 
-    $steps = [];
+    $steps = $stack = [];
+
+    if (count($line) > 3)
+    {
+        $out = output(false);
+        $out['Payload']['Error']['Message'] = "Input needs at least three operands";
+        $out['Payload']['Input'] = $in['payload']['line'];
+        response($out);
+        exit; //exit early
+    }
 
     $total = count($line) -1;
-    $o1 = $o2 = $op = null;
 
-    for ($i = 0; $i < $total;) // no default increment
+    /**
+     * This loops over each element in the input array
+     *
+     * Numbers in the input are unshift()ed into $stack
+     * Operations calculate the first two arguments shift()ed from $stack
+     */
+    for ($i = 0; $i < $total; $i++)
     {
-        if (empty($o1))
+        // numbers are added to the stack
+        if (is_numeric($line[$i]) && !empty($line[$i]))
         {
-            $o1 = array_shift($line);
-            $i++;
-            if (!ctype_digit($o1))
-            {
-                $out = output(false);
-                $out['Payload']['Error']['Message'] = "Error parsing operand ".$i;
-                $out['Payload']['Error']['Parameter'] = $o1;
-                $o1 = $o2 = $op = null;
-                break;
-            }
+            array_unshift($stack, $line[$i]);
+            continue;
         }
-        if (empty($o2))
+
+        // operations calculate the stack
+        else if (in_array($line[$i], $operations))
         {
-            $o2 = array_shift($line);
-            $i++;
-            if (!ctype_digit($o2))
+            $o1 = array_shift($stack);
+            $o2 = array_shift($stack);
+            $op = $line[$i];
+
+            //actual calc
+            if (!empty($o1) && !empty($o2) && !empty($op))
             {
-                $out = output(false);
-                $out['Payload']['Error']['Message'] = "Error parsing operand ".$i;
-                $out['Payload']['Error']['Parameter'] = $o2;
-                $o1 = $o2 = $op = null;
-                break;
+                if ($op == '^') { // shim for PHP exponent syntax
+                    $op = '**';
+                }
+                if ($op == 'x') { // shim for multiplication
+                    $op = '*';
+                }
+
+                $steps[] = [
+                    'o1' => $o1,
+                    'o2' => $o2,
+                    'op' => $op,
+                    'eval' => $o1.$op.$o2,
+                ]; // debug individual steps
+
+                $result = eval('return '. $o1.$op.$o2 .';'); //calc here
+                array_unshift($stack, $result);
             }
-        }
-        if (empty($op))
-        {
-            $op = array_shift($line);
-            $i++;
-            if (!in_array($op, $operations)) // sanitize operations
+            else //we're missing something
             {
                 $out = output(false);
-                $out['Payload']['Error']['Message'] = "Error parsing operand ".$i;
-                $out['Payload']['Error']['Parameter'] = $op;
-                $o1 = $o2 = $op = null;
-                break;
+                $out['Payload']['Error'] = [
+                    'Message'   => 'Error executing operation '. $op,
+                    'Arguments' => [
+                        'o1' => $o1,
+                        'o2' => $o2,
+                        'op' => $op,
+                    ]
+                ];
             }
         }
 
-        //actual calc
-        if (!empty($o1) && !empty($o2) && !empty($op))
-        {
-            if ($op == '^') { // shim for non-standard PHP exponent syntax
-                $op = '**';
-            }
-
-            $steps[] = [
-                'o1' => $o1,
-                'o2' => $o2,
-                'op' => $op,
-                'eval' => $o1.$op.$o2,
-            ]; // debug individual steps
-
-            $o1 = eval('return '. $o1.$op.$o2 .';'); //calc here
-            $o2 = $op = null; // reset for next operation
-        }
+        // anything else is a syntax error
         else
         {
-            break;
+            $out = output(false);
+            $out['Payload']['Error'] = [
+                'Message' => "Syntax error at argument '".$line[$i]."'",
+            ];
         }
     }
-    if (!empty($o1))
+
+    //final output validation
+    if (!empty($stack[0]) && count($stack[0]) == 1)
     {
         // success
         $out['Payload']['Answer'] = $o1;
@@ -155,6 +166,7 @@ if (!empty($in['payload']) && !empty($in['payload']['line']))
             $out = output(false);
             $out['Payload']['Error']['Message'] = 'Unable to calculate result';
         }
+        $out['Payload']['Steps'] = $steps;
         $out['Payload']['Input'] = $in['payload']['line'];
     }
 }
